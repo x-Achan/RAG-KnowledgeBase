@@ -15,7 +15,7 @@ public class ParseResult {
     /** 错误信息（success=false 时有值） */
     private String errorMsg;
 
-    /** 解析出的页面列表（PDF 按页，其他格式整体算一页） */
+    /** 核心：解析出的页面列表（PDF 按页，其他格式整体算一页） */
     private List<PageContent> pages;
 
     /**
