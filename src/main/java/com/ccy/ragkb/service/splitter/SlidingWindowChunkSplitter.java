@@ -1,4 +1,4 @@
-package com.ccy.ragkb.splitter;
+package com.ccy.ragkb.service.splitter;
 
 import com.ccy.ragkb.service.loader.ParseResult;
 import lombok.extern.slf4j.Slf4j;

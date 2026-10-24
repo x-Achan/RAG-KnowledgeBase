@@ -1,4 +1,4 @@
-package com.ccy.ragkb.splitter;
+package com.ccy.ragkb.service.splitter;
 
 import lombok.Builder;
 import lombok.Data;

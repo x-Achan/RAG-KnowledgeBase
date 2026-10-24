@@ -1,7 +1,7 @@
 package com.ccy.ragkb.service;
 
 import com.ccy.ragkb.service.loader.ParseResult;
-import com.ccy.ragkb.splitter.*;
+import com.ccy.ragkb.service.splitter.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
