@@ -1,6 +1,7 @@
 package com.ccy.ragkb.service;
 
 import com.ccy.ragkb.entity.KnowledgeBase;
+import com.ccy.ragkb.exception.BizException;
 import com.ccy.ragkb.repository.KbPermissionRepository;
 import com.ccy.ragkb.repository.KnowledgeBaseRepository;
 import com.ccy.ragkb.security.UserContext;
@@ -34,7 +35,7 @@ public class PermissionService {
                 kbId, "DEPARTMENT", deptId);
 
         if (!hasPermission) {
-            throw new RuntimeException("无权访问该知识库");
+            throw BizException.forbidden("无权访问该知识库");
         }
     }
 
@@ -53,7 +54,7 @@ public class PermissionService {
                         kbId, "DEPARTMENT", deptId, java.util.List.of("WRITE", "ADMIN"));
 
         if (!hasWritePermission) {
-            throw new RuntimeException("无文档管理权限");
+            throw BizException.forbidden("无文档管理权限");
         }
     }
 }
