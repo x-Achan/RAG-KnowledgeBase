@@ -2,6 +2,8 @@ package com.ccy.ragkb.controller;
 
 import com.ccy.ragkb.dto.ApiResponse;
 import com.ccy.ragkb.dto.RagQueryRequest;
+import com.ccy.ragkb.dto.RagResponse;
+import com.ccy.ragkb.service.FullRagPipeline;
 import com.ccy.ragkb.service.RagQueryService;
 import com.ccy.ragkb.service.RagQueryServiceV2;
 import com.ccy.ragkb.service.RagQueryServiceV3;
@@ -16,6 +18,7 @@ public class RagQueryController {
     private final RagQueryService ragQueryService;
     private final RagQueryServiceV2 ragQueryService2;
     private final RagQueryServiceV3 ragQueryService3;
+    private final FullRagPipeline fullRagPipeline;
 
     @PostMapping("/query")
     public ApiResponse<String> query(@RequestBody RagQueryRequest req) {
@@ -30,5 +33,10 @@ public class RagQueryController {
     @PostMapping("/query3")
     public ApiResponse<String> query3(@RequestBody RagQueryRequest req) {
         return ApiResponse.ok(ragQueryService3.query(req.getQuestion(), req.getKbIds()));
+    }
+
+    @PostMapping("/query4")
+    public ApiResponse<RagResponse> query4(@RequestBody RagQueryRequest req) {
+        return ApiResponse.ok(fullRagPipeline.query(req.getQuestion(), req.getKbIds()));
     }
 }

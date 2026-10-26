@@ -17,8 +17,8 @@ import java.util.List;
 public class QueryRewriterService {
 
     private final ChatClient chatClient;
-    //private final TokenMetrics tokenMetrics;
-    //private final ContextTrimmerService contextTrimmer;
+    private final TokenMetrics tokenMetrics;
+    private final ContextTrimmerService contextTrimmer;
 
     /**
      * HyDE：生成假设性回答，用于向量检索。
@@ -43,8 +43,8 @@ public class QueryRewriterService {
                     .content();
             log.debug("[QueryRewriter] HyDE 结果：{}", hypothetical);
 
-            //int genTokens = contextTrimmer.countTokens(hypothetical);
-            //tokenMetrics.recordGenerationTokens(genTokens);
+            int genTokens = contextTrimmer.countTokens(hypothetical);
+            tokenMetrics.recordGenerationTokens(genTokens);
 
             return hypothetical;
         } catch (Exception e) {
@@ -76,8 +76,8 @@ public class QueryRewriterService {
                     .call()
                     .content();
 
-            //int genTokens = contextTrimmer.countTokens(expanded);
-            //tokenMetrics.recordGenerationTokens(genTokens);
+            int genTokens = contextTrimmer.countTokens(expanded);
+            tokenMetrics.recordGenerationTokens(genTokens);
 
             List<String> queries = new ArrayList<>();
             queries.add(question);  // 原始问题也要检索

@@ -26,7 +26,7 @@ public class EmbeddingService {
 
     private final EmbeddingModel embeddingModel;
     private final StringRedisTemplate redisTemplate;
-//    private final TokenMetrics tokenMetrics;
+    private final TokenMetrics tokenMetrics;
 
     /**
      * 自身代理引用——用于内部调用走 AOP 代理（@Retryable / @Recover 才会生效）。
@@ -36,11 +36,11 @@ public class EmbeddingService {
 
     public EmbeddingService(EmbeddingModel embeddingModel,
                             StringRedisTemplate redisTemplate,
-//                            TokenMetrics tokenMetrics,
+                            TokenMetrics tokenMetrics,
                             @Lazy EmbeddingService self) {
         this.embeddingModel = embeddingModel;
         this.redisTemplate = redisTemplate;
-//        this.tokenMetrics = tokenMetrics;
+        this.tokenMetrics = tokenMetrics;
         this.self = self;
     }
 
@@ -163,9 +163,9 @@ public class EmbeddingService {
         log.info("[Embedding] API调用完成，共{}条，消耗Token={}",
                 texts.size(), totalTokens.get());
 
-//        if (totalTokens.get() > 0) {
-//            tokenMetrics.recordEmbeddingTokens(totalTokens.get());
-//        }
+        if (totalTokens.get() > 0) {
+            tokenMetrics.recordEmbeddingTokens(totalTokens.get());
+        }
 
         return result;
     }
