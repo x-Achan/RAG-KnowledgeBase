@@ -1,0 +1,141 @@
+# GitHub 公共配置模板
+# 所有敏感信息均通过环境变量提供，不要在本文件中填写或提交真实密码/API Key。
+
+spring:
+  config:
+    # 本地可在项目根目录创建 .env；文件不存在时仍允许通过系统环境变量启动。
+    import: "optional:file:./.env[.properties]"
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  application:
+    name: ccy-rag-knowledge-base
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: ${CACHE_TTL:10m}
+      cache-null-values: false
+
+  # PostgreSQL + pgvector
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ragkb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+      minimum-idle: ${DB_MIN_IDLE:2}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:30000}
+
+  jpa:
+    hibernate:
+      # 本地开发可使用 update；生产环境建议通过 JPA_DDL_AUTO=validate 覆盖。
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: ${JPA_FORMAT_SQL:true}
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      lettuce:
+        pool:
+          max-active: ${REDIS_POOL_MAX_ACTIVE:16}
+          max-idle: ${REDIS_POOL_MAX_IDLE:8}
+          min-idle: ${REDIS_POOL_MIN_IDLE:2}
+
+  # 异步索引任务线程池
+  task:
+    execution:
+      pool:
+        core-size: ${ASYNC_CORE_SIZE:4}
+        max-size: ${ASYNC_MAX_SIZE:8}
+        queue-capacity: ${ASYNC_QUEUE_CAPACITY:100}
+      thread-name-prefix: rag-async-
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:50MB}
+      max-request-size: ${MAX_REQUEST_SIZE:50MB}
+
+  # DashScope/OpenAI 兼容接口
+  ai:
+    openai:
+      base-url: ${OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode}
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL:qwen-plus}
+          temperature: ${OPENAI_TEMPERATURE:0.2}
+          max-tokens: ${OPENAI_MAX_TOKENS:2000}
+      embedding:
+        base-url: ${EMBEDDING_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode}
+        api-key: ${EMBEDDING_API_KEY}
+        options:
+          # 数据库向量字段为 VECTOR(1024)，请使用输出 1024 维向量的模型。
+          model: ${EMBEDDING_MODEL:text-embedding-v3}
+
+# MinIO
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket: ${MINIO_BUCKET:rag-documents}
+
+# DashScope Reranker
+reranker:
+  endpoint: ${RERANKER_ENDPOINT:https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank}
+  api-key: ${RERANKER_API_KEY}
+  model: ${RERANKER_MODEL:gte-rerank}
+  timeout-ms: ${RERANKER_TIMEOUT_MS:800}
+  top-n: ${RERANKER_TOP_N:5}
+
+# RAG 参数
+rag:
+  chunk:
+    size: ${RAG_CHUNK_SIZE:512}
+    overlap: ${RAG_CHUNK_OVERLAP:64}
+  retrieval:
+    vector-top-k: ${RAG_VECTOR_TOP_K:20}
+    fulltext-top-k: ${RAG_FULLTEXT_TOP_K:20}
+    return-top-n: ${RAG_RETURN_TOP_N:5}
+    min-score: ${RAG_MIN_SCORE:0.3}
+  context:
+    max-tokens: ${RAG_CONTEXT_MAX_TOKENS:3000}
+  cache:
+    embedding-ttl: ${RAG_EMBEDDING_CACHE_TTL:7d}
+    query-ttl: ${RAG_QUERY_CACHE_TTL:10m}
+
+# Sa-Token
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: ${SA_TOKEN_TIMEOUT:86400}
+  is-concurrent: ${SA_TOKEN_IS_CONCURRENT:true}
+  is-share: ${SA_TOKEN_IS_SHARE:true}
+  is-read-header: true
+
+# Actuator / Prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_HEALTH_SHOW_DETAILS:when-authorized}
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.ccy.ragkb: ${APP_LOG_LEVEL:INFO}
+    org.springframework.ai: ${SPRING_AI_LOG_LEVEL:INFO}

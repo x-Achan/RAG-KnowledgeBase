@@ -5,7 +5,22 @@ target/
 .kotlin
 
 ### Local application configuration ###
-/src/main/resources/application.yaml
+/src/main/resources/application-local-backup.yaml
+.env
+.env.*
+!.env.example
+
+### Local datasets and helper tools ###
+/dataset/
+/tools/
+
+### Frontend ###
+/frontend/node_modules/
+/frontend/dist/
+/frontend/*.tsbuildinfo
+/frontend/.env
+/frontend/.env.*
+!/frontend/.env.example
 
 ### IntelliJ IDEA ###
 .idea/
